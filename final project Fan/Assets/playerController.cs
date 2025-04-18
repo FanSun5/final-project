@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class playerController : MonoBehaviour
 {
-    private LayerMask counterlayer;
+
     private CharacterController cc;
     public float speed;
     private Vector3 playerMovement;
@@ -37,13 +37,13 @@ public class playerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         MovePlayer();
 
         CameraLook();
-        Interaction();
 
-       
+
+
 
     }
 
@@ -62,7 +62,7 @@ public class playerController : MonoBehaviour
         float inputMoveZ = Input.GetAxis("Vertical");
         Vector3 move;
 
-        
+
 
         move = (transform.forward * inputMoveZ) + (transform.right * inputMoveX);
 
@@ -87,34 +87,24 @@ public class playerController : MonoBehaviour
 
 
 
-        
+
         yRotation += mouseX;
         //rotate the player left/rigght y axis rotation
         transform.rotation = Quaternion.Euler(0f, yRotation, 0);
 
 
-      
+
         xRotation -= mouseY;
         //clamp rotation
         xRotation = Mathf.Clamp(xRotation, -90, 90); //prevent flipping
 
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0, 0);
     }
-
-
-    private void Interaction()
-    {
-        RaycastHit hit;
-        bool isCollide = Physics.Raycast(transform.position, transform.forward, out hit,4f); ;
-
-        if (isCollide) 
-        {
-            hit.transform.GetComponent<ClearCounter>().Interact();
-        
-        
-        }
-
-
-
-    }
 }
+
+
+    
+
+
+  
+
