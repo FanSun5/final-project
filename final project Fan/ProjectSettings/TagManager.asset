@@ -6,6 +6,9 @@ TagManager:
   tags:
   - lemon
   - cup
+  - CwT
+  - CwM
+  - CwMT
   layers:
   - Default
   - TransparentFX
