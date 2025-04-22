@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 3405745094955155839}
   - component: {fileID: 3916178530196041639}
   - component: {fileID: 7760191171558430705}
+  - component: {fileID: 5579196384095590706}
   m_Layer: 0
-  m_Name: cup_w tea
-  m_TagString: cup
+  m_Name: lemon Tea
+  m_TagString: item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -62,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 763227e222377a54ebe4e8e2fb1ca5de, type: 2}
+  - {fileID: 2100000, guid: 4a6f85855d3c27745ae535d427c114bc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,3 +108,16 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &5579196384095590706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4854873705361361874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52e1198853df8f542ad71b0fca2d8fe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 5

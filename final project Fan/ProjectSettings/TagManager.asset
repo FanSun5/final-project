@@ -4,11 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - lemon
   - cup
-  - CwT
-  - CwM
-  - CwMT
+  - Item
+  - item
   layers:
   - Default
   - TransparentFX

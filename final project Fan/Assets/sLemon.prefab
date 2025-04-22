@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 3099408763308064176}
   - component: {fileID: 456540970846912078}
   - component: {fileID: 315679300895985277}
-  - component: {fileID: -3168523923725386529}
+  - component: {fileID: 9099491470156754139}
   m_Layer: 0
-  m_Name: lemon
+  m_Name: sLemon
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 65d0c2efdaabb34469b2dd0a12cce229, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -119,8 +119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e1198853df8f542ad71b0fca2d8fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
---- !u!54 &-3168523923725386529
+  type: 1
+--- !u!54 &9099491470156754139
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
