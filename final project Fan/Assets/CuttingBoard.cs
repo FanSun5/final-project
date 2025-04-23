@@ -19,11 +19,11 @@ public class CuttingBoard : CounterBase
         {
             Destroy(itemOnBoard);
             Instantiate(slicedLemonPrefab, holdPoint.position, holdPoint.rotation);
-            Debug.Log("柠檬切成了柠檬片！");
+            Debug.Log("cut");
         }
         else
         {
-            Debug.Log("切菜板上不是柠檬！");
+            Debug.Log("cant cut");
         }
     }
 }

@@ -134,10 +134,8 @@ public class playerController : MonoBehaviour
                 TeaCounter teaCounter = hit.collider.GetComponentInParent<TeaCounter>();
                 if (teaCounter != null)
                 {
-                    if (heldItem != null)
-                    {
-                        teaCounter.TryAddTea(heldItem);
-                    }
+                    teaCounter.TryAddTea();
+                    
                     return;
                 }
 

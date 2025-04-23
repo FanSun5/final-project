@@ -6,7 +6,6 @@ TagManager:
   tags:
   - cup
   - Item
-  - item
   layers:
   - Default
   - TransparentFX
