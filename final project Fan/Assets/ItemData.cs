@@ -15,6 +15,7 @@ public enum ItemType
     BobaTeaCup,
     MilkTea,
     BobaMilkTea,
+    IcedLemonTea,
 }
 
 public class ItemData : MonoBehaviour
