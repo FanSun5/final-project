@@ -54,13 +54,13 @@ public class MonsterAI : MonoBehaviour
     {
         while (isChasing)
         {
-            // 不断把目标设为玩家位置
+            
             agent.SetDestination(player.position);
             yield return null;
         }
     }
 
-    // 当怪物进入房间区域（房间触发器必须打 tag="Room"）
+    
     void OnTriggerEnter(Collider other)
     {
         if (!isChasing && other.CompareTag("Room"))
@@ -72,7 +72,7 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
-    // 可选：当玩家被抓
+    
     void OnCollisionEnter(Collision col)
     {
         if (isChasing && col.collider.CompareTag("Player"))
