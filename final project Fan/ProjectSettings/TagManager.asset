@@ -7,6 +7,7 @@ TagManager:
   - cup
   - Item
   - Customer
+  - Room
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - Water
   - UI
   - clearCounter
-  - 
+  - notWalkable
   - 
   - 
   - 
