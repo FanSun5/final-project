@@ -33,19 +33,19 @@ public class MonsterAI : MonoBehaviour
     {
         while (!isChasing)
         {
-            // 去下一个巡逻点
+            
             agent.SetDestination(patrolPoints[currentIndex].position);
-            // 等待到达
+           
             yield return new WaitUntil(() =>
                 !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance
             );
-            // 停留随机时间
+            
             yield return new WaitForSeconds(Random.Range(patrolWaitMin, patrolWaitMax));
-            // 下一个点
+            
             currentIndex = (currentIndex + 1) % patrolPoints.Length;
         }
 
-        // 切到追逐模式
+        
         agent.speed = chaseSpeed;
         StartCoroutine(ChaseRoutine());
     }
@@ -65,8 +65,9 @@ public class MonsterAI : MonoBehaviour
     {
         if (!isChasing && other.CompareTag("Room"))
         {
+            Debug.Log("trigger");
             isChasing = true;
-            // 停掉巡逻协程，开始追逐
+            
             StopAllCoroutines();
             StartCoroutine(ChaseRoutine());
         }
