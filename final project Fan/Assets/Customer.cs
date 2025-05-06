@@ -5,7 +5,7 @@ public class Customer : MonoBehaviour
 {
     
     public ItemType[] possibleOrders = {
-        ItemType.IcedLemonTea,
+        ItemType.IcedTea,
         ItemType.LemonTea,
         ItemType.BobaMilkTea,
     };

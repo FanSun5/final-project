@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5579196384095590706}
   - component: {fileID: -6863856691555302018}
   m_Layer: 0
-  m_Name: lemon Tea
+  m_Name: IcedTea
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4a6f85855d3c27745ae535d427c114bc, type: 2}
+  - {fileID: 2100000, guid: 10f6c2e6366f0ac4db329fae84d6d036, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e1198853df8f542ad71b0fca2d8fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 4
+  type: 6
 --- !u!54 &-6863856691555302018
 Rigidbody:
   m_ObjectHideFlags: 0

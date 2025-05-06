@@ -1,7 +1,7 @@
+// playerController.cs
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 
 public class playerController : MonoBehaviour
 {
@@ -16,6 +16,9 @@ public class playerController : MonoBehaviour
     private ItemData heldItemData = null;
     public Transform holdPosition;
     public float interactDistance = 3f;
+
+    public bool isHiding = false;
+    private Vector3 lastPosition;
 
     void Start()
     {
@@ -38,6 +41,7 @@ public class playerController : MonoBehaviour
 
     void MovePlayer()
     {
+        if (isHiding) return;
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
         Vector3 dir = transform.forward * z + transform.right * x;
@@ -56,15 +60,21 @@ public class playerController : MonoBehaviour
 
     void HandlePickUpAndDrop()
     {
+        if (isHiding) return;
         if (!Physics.Raycast(playerCamera.position, playerCamera.forward, out RaycastHit hit, interactDistance))
             return;
 
-        // —— 手上没东西：尝试捡起或生成 —— 
         if (heldItem == null)
         {
-            if (hit.collider.TryGetComponent<LemonSpawner>(out var sp))
+            if (hit.collider.TryGetComponent<LemonSpawner>(out var lemonSp))
             {
-                sp.GiveLemonToPlayer();
+                lemonSp.GiveLemonToPlayer();
+                return;
+            }
+            else if (hit.collider.TryGetComponent<CupSpawner>(out var cupSp))
+            {
+                cupSp.GiveCupToPlayer();
+                return;
             }
             else if (hit.collider.CompareTag("Item"))
             {
@@ -76,32 +86,35 @@ public class playerController : MonoBehaviour
                 heldItem.transform.localRotation = Quaternion.identity;
             }
         }
-        
         else
         {
-            // 1) 交单：只销毁被点中的那位顾客
+            if (hit.collider.TryGetComponent<TrashBin>(out var trash))
+            {
+                Destroy(heldItem);
+                heldItem = null;
+                heldItemData = null;
+                return;
+            }
+
             var cust = hit.collider.GetComponentInParent<Customer>();
             if (cust != null)
             {
-                // 把类型先存下来
                 ItemType deliveredType = heldItemData.type;
                 bool correct = cust.orderType == deliveredType;
-
                 Destroy(cust.gameObject);
                 Destroy(heldItem);
                 heldItem = null;
                 heldItemData = null;
-
-                // 传入本次交单的类型和对错
-                FindObjectOfType<GameManager>()
-                    .ServeOrder(deliveredType, correct);
+                FindObjectOfType<GameManager>().ServeOrder(deliveredType, correct);
                 return;
             }
 
-            // 2) 放到柜台
             var counter = hit.collider.GetComponentInParent<CounterBase>();
             if (counter != null && counter.holdPoint != null)
             {
+                if (!(counter is ClearCounter) && counter.HasItem)
+                    return;
+
                 heldItem.transform.SetParent(counter.holdPoint);
                 heldItem.transform.localPosition = Vector3.zero;
                 heldItem.transform.localRotation = Quaternion.identity;
@@ -112,7 +125,6 @@ public class playerController : MonoBehaviour
                 return;
             }
 
-            // 3) 其它情况，继续拿在手上
             heldItem.transform.SetParent(holdPosition);
             heldItem.transform.localPosition = Vector3.zero;
             heldItem.transform.localRotation = Quaternion.identity;
@@ -121,14 +133,28 @@ public class playerController : MonoBehaviour
 
     void HandleInteraction()
     {
+        if (isHiding)
+        {
+            transform.position = lastPosition;
+            isHiding = false;
+            return;
+        }
+
         if (!Physics.Raycast(playerCamera.position, playerCamera.forward, out RaycastHit hit, interactDistance))
             return;
 
-        var cb = hit.collider.GetComponentInParent<CuttingBoard>();
-        if (cb != null) { cb.TryCut(); return; }
-        var tc = hit.collider.GetComponentInParent<TeaCounter>();
-        if (tc != null) { tc.TryAddTea(); return; }
-        // ClearCounter 不需要空格交互
+        if (hit.collider.GetComponentInParent<Locker>() is Locker locker)
+        {
+            lastPosition = transform.position;
+            transform.position = locker.hidePosition.position;
+            isHiding = true;
+            return;
+        }
+        if (hit.collider.GetComponentInParent<CuttingBoard>() is CuttingBoard cb) { cb.TryCut(); return; }
+        if (hit.collider.GetComponentInParent<TeaCounter>() is TeaCounter tc) { tc.TryAddTea(); return; }
+        if (hit.collider.GetComponentInParent<IceCounter>() is IceCounter ic) { ic.TryAddIce(); return; }
+        if (hit.collider.GetComponentInParent<BobaCounter>() is BobaCounter bc) { bc.TryAddBoba(); return; }
+        if (hit.collider.GetComponentInParent<MilkCounter>() is MilkCounter mc) { mc.TryAddMilk(); return; }
     }
 
     public bool HoldingNothing() => heldItem == null;

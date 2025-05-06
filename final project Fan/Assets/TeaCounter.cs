@@ -2,65 +2,43 @@ using UnityEngine;
 
 public class TeaCounter : CounterBase
 {
-    public GameObject lemonTeaPrefab; // 加完茶生成的柠檬茶Prefab
-    public GameObject BobaTeaPrefab;
-    public GameObject TeaPrefab;
+    public GameObject lemonTeaPrefab;      // 柠檬茶
+    public GameObject icedTeaPrefab;       // 冰茶
+    public GameObject bobaMilkTeaPrefab;   // 波霸奶茶
 
     public void TryAddTea()
     {
-
         if (holdPoint.childCount == 0)
-        {
-            Debug.Log("");
             return;
-        }
 
-        GameObject itemOnBoard = holdPoint.GetChild(0).gameObject;
-        ItemData data = itemOnBoard.GetComponent<ItemData>();
+        GameObject item = holdPoint.GetChild(0).gameObject;
+        ItemData data = item.GetComponent<ItemData>();
+        if (data == null)
+            return;
 
-        if (data != null && data.type == ItemType.LemonCup)
+        switch (data.type)
         {
-            Destroy(itemOnBoard);
-            Instantiate(lemonTeaPrefab, holdPoint.position, holdPoint.rotation);
-            Debug.Log("cut");
-        }
-        else
-        {
-            Debug.Log("cant cut");
+            case ItemType.LemonCup:
+                Make(lemonTeaPrefab);
+                break;
+
+            case ItemType.IceCup:
+                Make(icedTeaPrefab);
+                break;
+
+            case ItemType.BobaMilkCup:
+                Make(bobaMilkTeaPrefab);
+                break;
+
+            default:
+                Debug.Log("不能在茶台制作：" + data.type);
+                break;
         }
     }
 
-    public void makeBobaTea()
+    private void Make(GameObject prefab)
     {
-        GameObject itemOnBoard = holdPoint.GetChild(0).gameObject;
-        ItemData data = itemOnBoard.GetComponent<ItemData>();
-
-        if (data != null && data.type == ItemType.BobaCup)
-        {
-            Destroy(itemOnBoard);
-            Instantiate(BobaTeaPrefab, holdPoint.position, holdPoint.rotation);
-            Debug.Log("bobaTea");
-        }
-        else
-        {
-            Debug.Log("cant cut");
-        }
-    }
-
-    public void makeTea()
-    {
-        GameObject itemOnBoard = holdPoint.GetChild(0).gameObject;
-        ItemData data = itemOnBoard.GetComponent<ItemData>();
-
-        if (data != null && data.type == ItemType.Cup)
-        {
-            Destroy(itemOnBoard);
-            Instantiate(TeaPrefab, holdPoint.position, holdPoint.rotation);
-            Debug.Log("bobaTea");
-        }
-        else
-        {
-            Debug.Log("cant cut");
-        }
+        Destroy(holdPoint.GetChild(0).gameObject);
+        Instantiate(prefab, holdPoint.position, holdPoint.rotation);
     }
 }

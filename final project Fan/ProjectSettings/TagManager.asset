@@ -8,6 +8,9 @@ TagManager:
   - Item
   - Customer
   - Room
+  - close
+  - PatrolA
+  - PatrolB
   layers:
   - Default
   - TransparentFX

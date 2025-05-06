@@ -6,16 +6,17 @@ public enum ItemType
     LemonSlice,
     Cup,
     LemonCup,
-    Tea,
     LemonTea,
-    Milk,
-    Boba,
-    ice,
+    Tea,
+    IcedTea,
+    IceCup,
+  
+    
     BobaCup,
-    BobaTeaCup,
-    MilkTea,
+    BobaMilkCup,
+ 
     BobaMilkTea,
-    IcedLemonTea,
+   
 }
 
 public class ItemData : MonoBehaviour

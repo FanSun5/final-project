@@ -3,84 +3,44 @@ using UnityEngine;
 
 public class ClearCounter : CounterBase
 {
-    public GameObject lemonCupPrefab; // 合成后的柠檬水杯Prefab
-
+    public GameObject lemonCupPrefab;
     private List<GameObject> placedItems = new List<GameObject>();
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Item"))
-        {
-            ItemData data = other.GetComponent<ItemData>();
-            if (data == null) return;
+        if (!other.CompareTag("Item")) return;
 
-            if (data.type == ItemType.LemonSlice)
-            {
-                if (!HasItemType(ItemType.Cup))
-                {
-                    Debug.Log("需要先放杯子才能放柠檬片！");
-                    return;
-                }
-            }
+        var go = other.gameObject;
+        if (placedItems.Contains(go)) return;
 
-            placedItems.Add(other.gameObject);
-            CheckCombination();
-        }
+        placedItems.Add(go);
+        CheckCombination();
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Item"))
-        {
             placedItems.Remove(other.gameObject);
-        }
     }
 
     private void CheckCombination()
     {
-        bool hasCup = false;
-        bool hasLemonSlice = false;
-        GameObject cup = null;
-        GameObject lemonSlice = null;
-
-        foreach (GameObject item in placedItems)
+        GameObject cup = null, lemon = null;
+        foreach (var item in placedItems)
         {
-            ItemData data = item.GetComponent<ItemData>();
-            if (data != null)
-            {
-                if (data.type == ItemType.Cup)
-                {
-                    hasCup = true;
-                    cup = item;
-                }
-                else if (data.type == ItemType.LemonSlice)
-                {
-                    hasLemonSlice = true;
-                    lemonSlice = item;
-                }
-            }
+            var data = item.GetComponent<ItemData>();
+            if (data == null) continue;
+            if (data.type == ItemType.Cup) cup = item;
+            else if (data.type == ItemType.LemonSlice) lemon = item;
         }
 
-        if (hasCup && hasLemonSlice)
+        if (cup != null && lemon != null)
         {
-            Vector3 spawnPos = (cup.transform.position + lemonSlice.transform.position) / 2f;
+            Vector3 spawnPos = (cup.transform.position + lemon.transform.position) / 2f;
             Destroy(cup);
-            Destroy(lemonSlice);
+            Destroy(lemon);
             placedItems.Clear();
             Instantiate(lemonCupPrefab, spawnPos, Quaternion.identity);
         }
-    }
-
-    private bool HasItemType(ItemType type)
-    {
-        foreach (GameObject item in placedItems)
-        {
-            ItemData data = item.GetComponent<ItemData>();
-            if (data != null && data.type == type)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }
