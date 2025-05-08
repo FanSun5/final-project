@@ -1,4 +1,3 @@
-// playerController.cs
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -125,6 +124,7 @@ public class playerController : MonoBehaviour
                 return;
             }
 
+            // Drop back to holdPosition if nothing else
             heldItem.transform.SetParent(holdPosition);
             heldItem.transform.localPosition = Vector3.zero;
             heldItem.transform.localRotation = Quaternion.identity;
@@ -158,9 +158,20 @@ public class playerController : MonoBehaviour
     }
 
     public bool HoldingNothing() => heldItem == null;
+
     public void PickUpItem(GameObject item)
     {
         heldItem = item;
         heldItemData = item.GetComponent<ItemData>();
+    }
+
+    /// <summary>
+    /// 返回当前拿着的物品名称，若没拿任何东西返回 "None"
+    /// </summary>
+    public string GetHeldItemName()
+    {
+        return heldItemData != null
+            ? heldItemData.type.ToString()
+            : "None";
     }
 }

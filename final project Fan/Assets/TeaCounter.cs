@@ -38,7 +38,26 @@ public class TeaCounter : CounterBase
 
     private void Make(GameObject prefab)
     {
-        Destroy(holdPoint.GetChild(0).gameObject);
-        Instantiate(prefab, holdPoint.position, holdPoint.rotation);
+        // 销毁旧物件
+        if (holdPoint.childCount > 0)
+            Destroy(holdPoint.GetChild(0).gameObject);
+
+        // 先生成一个实例，然后挂到 holdPoint 下，保留世界坐标
+        GameObject newItem = Instantiate(prefab);
+        newItem.transform.SetParent(holdPoint, worldPositionStays: true);
+
+        // 重置位置与旋转
+        newItem.transform.localPosition = Vector3.zero;
+        newItem.transform.localRotation = Quaternion.identity;
+
+        // 拿到 holdPoint 在世界空间的缩放
+        Vector3 worldScale = holdPoint.lossyScale;
+        // 抵消父级缩放
+        newItem.transform.localScale = new Vector3(
+            1f / worldScale.x,
+            1f / worldScale.y,
+            1f / worldScale.z
+        );
     }
+
 }

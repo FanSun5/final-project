@@ -34,6 +34,7 @@ public class MonsterAI : MonoBehaviour
         player = FindObjectOfType<playerController>();
         audioSource = GetComponent<AudioSource>();
 
+        // 初次随机选择巡逻路线
         patrolPoints = (Random.value < 0.5f ? patrolPointsA : patrolPointsB);
         if (patrolPoints.Length == 0)
         {
@@ -67,6 +68,7 @@ public class MonsterAI : MonoBehaviour
             waitTimer -= Time.deltaTime;
             if (waitTimer <= 0f)
             {
+                // 触发追逐的判定保持不变
                 if (currentIndex == chaseTriggerIndex)
                 {
                     state = State.Chase;
@@ -75,20 +77,30 @@ public class MonsterAI : MonoBehaviour
                     return;
                 }
 
-                // 去下一个点
-                currentIndex = (currentIndex + 1) % patrolPoints.Length;
-                GoToPoint(currentIndex);
-                waitTimer = Random.Range(patrolWaitMin, patrolWaitMax);
+                // —— 新增：先播放当前索引对应的 patrolClips[currentIndex] ——
                 if (patrolClips != null &&
                     currentIndex < patrolClips.Length &&
                     patrolClips[currentIndex] != null)
                 {
                     audioSource.PlayOneShot(patrolClips[currentIndex]);
                 }
+                // —— 播放完毕，下面再切到下一个巡逻点 —— 
+
+                // 去下一个巡逻点
+                currentIndex = (currentIndex + 1) % patrolPoints.Length;
+                GoToPoint(currentIndex);
+                waitTimer = Random.Range(patrolWaitMin, patrolWaitMax);
+
+                // （可选）如果你还想在到达下一个点时播放一次，也可以保留这一段
+                //if (patrolClips != null &&
+                //    currentIndex < patrolClips.Length &&
+                //    patrolClips[currentIndex] != null)
+                //{
+                //    audioSource.PlayOneShot(patrolClips[currentIndex]);
+                //}
             }
         }
     }
-
     void ChaseUpdate()
     {
         agent.speed = chaseSpeed;
@@ -98,7 +110,6 @@ public class MonsterAI : MonoBehaviour
         {
             state = State.GiveUp;
             giveUpTimer = giveUpTime;
-            // 立刻停止当前路径，让 NavMeshAgent 放弃追逐路线
             agent.ResetPath();
         }
     }
@@ -108,12 +119,22 @@ public class MonsterAI : MonoBehaviour
         giveUpTimer -= Time.deltaTime;
         if (giveUpTimer <= 0f)
         {
+            // 切回巡逻状态
             state = State.Patrol;
             agent.speed = patrolSpeed;
-            
             agent.ResetPath();
+
+            // —— 关键：每次放弃追逐后重新随机路线 —— 
+            patrolPoints = (Random.value < 0.5f ? patrolPointsA : patrolPointsB);
+            if (patrolPoints.Length == 0)
+            {
+                Debug.LogError("MonsterAI: 请在 Inspector 填入巡逻点数组！");
+                enabled = false;
+                return;
+            }
+
             currentIndex = 0;
-            GoToPoint(0);
+            GoToPoint(currentIndex);
             waitTimer = Random.Range(patrolWaitMin, patrolWaitMax);
         }
     }
