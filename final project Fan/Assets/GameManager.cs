@@ -1,25 +1,28 @@
-// GameManager.cs
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("顾客刷入设置")]
+  
     public GameObject customerPrefab;
-    public Transform[] customerSpawnPoints; // a, b, c, d 四个点
-    public int totalOrders = 15;            // 总订单数
-    public int ordersToWin = 8;             // 完成多少单算胜利
-    public int maxConcurrentCustomers = 4;  // 同时最多几个顾客
-    public float minSpawnInterval = 2f;     // 刷新间隔最小
-    public float maxSpawnInterval = 10f;    // 刷新间隔最大
+    public Transform[] customerSpawnPoints;
+    public int totalOrders = 15;
+    public int ordersToWin = 8;
+    public int maxConcurrentCustomers = 4;
+    public float minSpawnInterval = 2f;
+    public float maxSpawnInterval = 10f;
 
-    [Header("游戏时长 & 场景名")]
-    public float gameTime = 400f;           // 400 秒倒计时
-    public string winSceneName;             // 胜利场景
-    public string loseSceneName;            // 超时失败场景
-    public string caughtSceneName;          // 被怪物抓到的失败场景
+    
+    public float gameTime = 400f;
+    public string winSceneName;
+    public string loseSceneName;
+
+   
+    public TextMeshProUGUI timerText;
+    public TextMeshProUGUI orderProgressText;
 
     private int ordersSpawned = 0;
     private int ordersCompleted = 0;
@@ -27,25 +30,35 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // 初始刷满
+        // 预先刷满顾客
         for (int i = 0; i < maxConcurrentCustomers; i++)
             TrySpawnCustomer();
-        // 启动自动刷新
+
         StartCoroutine(SpawnCustomerRoutine());
+        UpdateUI();
     }
 
     void Update()
     {
-        // 如果已经胜利或阵亡，就不再倒计时
-        if (playerDead || ordersCompleted >= ordersToWin) return;
+        if (playerDead) return;
 
-        // 做倒计时
+        // 倒计时
         gameTime -= Time.deltaTime;
+        UpdateUI();
+
         if (gameTime <= 0f)
         {
-            Debug.Log("Time up!");
-            SceneManager.LoadScene(loseSceneName);
+            playerDead = true;
+            // 时间到，但已达目标则胜利，否则失败
+            if (ordersCompleted >= ordersToWin)
+                SceneManager.LoadScene(winSceneName);
+            else
+                SceneManager.LoadScene(loseSceneName);
         }
+
+        // R 重新开始（可选保留）
+        if (Input.GetKeyDown(KeyCode.R))
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     IEnumerator SpawnCustomerRoutine()
@@ -63,7 +76,7 @@ public class GameManager : MonoBehaviour
         if (FindObjectsOfType<Customer>().Length >= maxConcurrentCustomers) return;
 
         var existing = FindObjectsOfType<Customer>();
-        List<int> freeIdx = new List<int>();
+        var freeIdx = new List<int>();
         for (int i = 0; i < customerSpawnPoints.Length; i++)
         {
             bool occupied = false;
@@ -82,7 +95,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 玩家交单接口
+    /// 处理交单，correct=true 表示订单正确
     /// </summary>
     public void ServeOrder(ItemType deliveredType, bool correct)
     {
@@ -91,8 +104,10 @@ public class GameManager : MonoBehaviour
         if (correct)
         {
             ordersCompleted++;
-            Debug.Log($"complete order! done={ordersCompleted}");
-            // 达标，胜利
+            UpdateUI();
+            Debug.Log($"Order completed: {ordersCompleted}/{ordersToWin}");
+
+            // 一旦达标，立刻跳转胜利场景
             if (ordersCompleted >= ordersToWin)
             {
                 SceneManager.LoadScene(winSceneName);
@@ -101,31 +116,33 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("incompleted order");
+            Debug.Log("Incorrect order.");
         }
 
-        // 补位 + 检查（超时的情况在 Update 里处理）
+        // 交完单后继续刷新
         TrySpawnCustomer();
     }
 
     /// <summary>
-    /// 怪物进店接口
-    /// </summary>
-    public void NotifyMonsterEntered()
-    {
-        foreach (var c in FindObjectsOfType<Customer>())
-            Destroy(c.gameObject);
-        Debug.Log("怪物进店，所有顾客消失");
-    }
-
-    /// <summary>
-    /// 玩家被抓接口
+    /// 玩家被怪物抓到
     /// </summary>
     public void NotifyPlayerDead()
     {
         if (playerDead) return;
         playerDead = true;
-        Debug.Log("玩家被抓，游戏结束");
-        SceneManager.LoadScene(caughtSceneName);
+        SceneManager.LoadScene(loseSceneName);
+    }
+
+    void UpdateUI()
+    {
+        if (timerText != null)
+        {
+            int m = Mathf.FloorToInt(gameTime / 60f);
+            int s = Mathf.FloorToInt(gameTime % 60f);
+            timerText.text = $"Time: {m:D2}:{s:D2}";
+        }
+
+        if (orderProgressText != null)
+            orderProgressText.text = $"Orders: {ordersCompleted}/{ordersToWin}";
     }
 }

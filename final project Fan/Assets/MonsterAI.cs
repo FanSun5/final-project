@@ -5,7 +5,7 @@ public class MonsterAI : MonoBehaviour
 {
     public Transform[] patrolPointsA;
     public Transform[] patrolPointsB;
-    [Tooltip("到这个索引时开始追逐")]
+    
     public int chaseTriggerIndex = 2;
 
     public float patrolWaitMin = 2f;
@@ -77,7 +77,7 @@ public class MonsterAI : MonoBehaviour
                     return;
                 }
 
-                // —— 新增：先播放当前索引对应的 patrolClips[currentIndex] ——
+                
                 if (patrolClips != null &&
                     currentIndex < patrolClips.Length &&
                     patrolClips[currentIndex] != null)
@@ -91,13 +91,7 @@ public class MonsterAI : MonoBehaviour
                 GoToPoint(currentIndex);
                 waitTimer = Random.Range(patrolWaitMin, patrolWaitMax);
 
-                // （可选）如果你还想在到达下一个点时播放一次，也可以保留这一段
-                //if (patrolClips != null &&
-                //    currentIndex < patrolClips.Length &&
-                //    patrolClips[currentIndex] != null)
-                //{
-                //    audioSource.PlayOneShot(patrolClips[currentIndex]);
-                //}
+         
             }
         }
     }
@@ -144,7 +138,9 @@ public class MonsterAI : MonoBehaviour
         if (state == State.Chase &&
             !player.isHiding &&
             col.collider.CompareTag("Player"))
+
         {
+            
             FindObjectOfType<GameManager>().NotifyPlayerDead();
         }
     }

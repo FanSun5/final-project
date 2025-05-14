@@ -1,37 +1,104 @@
-// MenuManager.cs
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
-    [Tooltip("游戏主场景名")]
-    public string gameSceneName;
-    [Tooltip("说明界面场景名")]
-    public string controlSceneName;
-    [Tooltip("主菜单场景名")]
-    public string menuSceneName;
+    public static MenuManager Instance;
 
-    /// <summary>点击 Play 按钮</summary>
+   
+    public string gameSceneName;
+   
+    public string controlSceneName;
+    
+    public string menuSceneName;
+    
+    public string winEndSceneName;
+    
+    public string loseEndSceneName;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    void Update()
+    {
+        // 按 ESC 直接退出程序（只有打包后生效）
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("按下 ESC，退出游戏");
+            Application.Quit();
+        }
+    }
+
     public void PlayGame()
     {
-        SceneManager.LoadScene(gameSceneName);
+        if (string.IsNullOrEmpty(gameSceneName))
+        {
+            Debug.LogWarning("MenuManager: gameSceneName 未设置，加载第一个场景");
+            SceneManager.LoadScene(0);
+        }
+        else
+        {
+            SceneManager.LoadScene(gameSceneName);
+        }
     }
 
-    /// <summary>点击 Control 按钮</summary>
     public void ShowControls()
     {
-        SceneManager.LoadScene(controlSceneName);
+        if (string.IsNullOrEmpty(controlSceneName))
+        {
+            Debug.LogWarning("MenuManager: controlSceneName 未设置，加载第一个场景");
+            SceneManager.LoadScene(0);
+        }
+        else
+        {
+            SceneManager.LoadScene(controlSceneName);
+        }
     }
 
-    /// <summary>说明界面点击返回菜单</summary>
     public void BackToMenu()
     {
-        SceneManager.LoadScene(menuSceneName);
+        if (string.IsNullOrEmpty(menuSceneName))
+        {
+            Debug.LogWarning("MenuManager: menuSceneName 未设置，加载第一个场景");
+            SceneManager.LoadScene(0);
+        }
+        else
+        {
+            SceneManager.LoadScene(menuSceneName);
+        }
     }
 
-    /// <summary>退出游戏（打包后生效）</summary>
-    public void QuitGame()
+    public void GoToWinEndScene()
     {
-        Application.Quit();
+        if (string.IsNullOrEmpty(winEndSceneName))
+        {
+            Debug.LogWarning("MenuManager: winEndSceneName 未设置，加载第一个场景");
+            SceneManager.LoadScene(0);
+        }
+        else
+        {
+            SceneManager.LoadScene(winEndSceneName);
+        }
+    }
+
+    public void GoToLoseEndScene()
+    {
+        if (string.IsNullOrEmpty(loseEndSceneName))
+        {
+            Debug.LogWarning("MenuManager: loseEndSceneName 未设置，加载第一个场景");
+            SceneManager.LoadScene(0);
+        }
+        else
+        {
+            SceneManager.LoadScene(loseEndSceneName);
+        }
     }
 }

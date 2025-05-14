@@ -11,6 +11,7 @@ TagManager:
   - close
   - PatrolA
   - PatrolB
+  - Enemy
   layers:
   - Default
   - TransparentFX
